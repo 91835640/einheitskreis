@@ -134,6 +134,8 @@ tr.cur td{background:var(--q);font-weight:700}
 .task code{font-family:var(--mono);font-size:14px;background:var(--q);padding:1px 5px;border-radius:4px}
 .hint{font-size:13px;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* Handy: Grid-Spalten dürfen schmaler als ihr Inhalt werden */
+.wrap>*,.tabpanel>*,.main>*,.side>*,.below>*{min-width:0}
 .tabbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:6px;padding:5px;background:var(--tabbar);border:1px solid var(--line);border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.04)}
 .tabbar button[role="tab"]{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;gap:8px;border:none;background:transparent;border-radius:8px;padding:8px 12px;color:var(--muted);font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden}
 .tabbar button[role="tab"]:hover{background:var(--tabhover)}
