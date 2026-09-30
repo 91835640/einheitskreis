@@ -17,6 +17,7 @@
   --cos:#1F63D6; --cos-soft:rgba(31,99,214,.12);
   --tan:#0E9F6E; --tan-soft:rgba(14,159,110,.13);
   --angle:#E0A100; --pos:#1E8A5A; --neg:#B4412F; --q:#EAF0F2;
+  --tabbar:#E2E8EB; --tabhover:rgba(0,0,0,.05);
   --display:"VarPhi","Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
   --body:"VarPhi","Atkinson Hyperlegible",ui-sans-serif,system-ui,sans-serif;
   --mono:"VarPhi","JetBrains Mono",ui-monospace,Menlo,monospace;
@@ -27,6 +28,7 @@
   --sin:#FF6B57; --sin-soft:rgba(255,107,87,.15); --cos:#5B9BFF; --cos-soft:rgba(91,155,255,.15);
   --tan:#34D399; --tan-soft:rgba(52,211,153,.16);
   --angle:#F2C230; --pos:#4CC48A; --neg:#FF7A66; --q:#1B252D;
+  --tabbar:#0B1014; --tabhover:rgba(255,255,255,.06);
 }}
 :root[data-theme="dark"]{
   color-scheme:dark;
@@ -34,6 +36,7 @@
   --sin:#FF6B57; --sin-soft:rgba(255,107,87,.15); --cos:#5B9BFF; --cos-soft:rgba(91,155,255,.15);
   --tan:#34D399; --tan-soft:rgba(52,211,153,.16);
   --angle:#F2C230; --pos:#4CC48A; --neg:#FF7A66; --q:#1B252D;
+  --tabbar:#0B1014; --tabhover:rgba(255,255,255,.06);
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -49,10 +52,10 @@ header p{margin:0;color:var(--muted);max-width:62ch}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
 .circle-panel{padding:8px}
 svg{display:block;width:100%;height:auto;touch-action:none;user-select:none;-webkit-user-select:none}
-#circle{cursor:grab;max-width:100%} #circle.dragging{cursor:grabbing}
-.label{font-family:var(--mono);font-size:7px;fill:var(--muted)}
-.mlabel{font-family:var(--body);font-size:9.5px;font-weight:700;paint-order:stroke;stroke:var(--surface);stroke-width:3.2px;stroke-linejoin:round}
-.qlabel{font-family:var(--display);font-size:11px;font-weight:700;fill:var(--muted);opacity:.55}
+#circle{cursor:grab} #circle.dragging{cursor:grabbing}
+.label{font-family:var(--mono);font-size:9px;fill:var(--muted)}
+.mlabel{font-family:var(--body);font-size:11.5px;font-weight:700;paint-order:stroke;stroke:var(--surface);stroke-width:3.2px;stroke-linejoin:round}
+.qlabel{font-family:var(--display);font-size:13px;font-weight:700;fill:var(--muted);opacity:.55}
 #pointA:focus{outline:none} #pointA:focus-visible .ring{stroke:var(--angle);stroke-width:2.2}
 .side{display:grid;gap:16px}
 .readout{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -106,7 +109,20 @@ tr.cur td{background:var(--q);font-weight:700}
 .legend{font-family:var(--body);font-size:13px;font-weight:400;color:var(--muted);display:flex;gap:12px}
 .legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:4px}
 .graph-scroll{overflow-x:auto}
-#graph{min-width:520px;cursor:crosshair}
+#graph{cursor:crosshair}
+.couple h2{display:flex;flex-wrap:wrap;gap:12px;align-items:baseline}
+.couple-scroll{overflow-x:auto;margin-inline:-6px}
+.figrow{position:relative;display:grid;align-items:start;min-width:700px}
+#linkOverlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.slot{min-width:0}
+.graph-scroll #graph{min-width:560px}
+.headctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.headctl .seg button{padding:6px 12px}
+.headctl .seg svg{width:22px;height:14px;display:inline-block}
+#gctrl .gcontrols{margin-top:12px}
+.below{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) minmax(0,.9fr);gap:16px;align-items:start}
+@media (max-width:1000px){.below{grid-template-columns:1fr 1fr}.below>:first-child{grid-column:1/-1}}
+@media (max-width:680px){.below{grid-template-columns:1fr}}
 .tasks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 @media (max-width:820px){.tasks{grid-template-columns:1fr}}
 .task{display:flex;flex-direction:column;gap:10px}
@@ -118,21 +134,93 @@ tr.cur td{background:var(--q);font-weight:700}
 .task code{font-family:var(--mono);font-size:14px;background:var(--q);padding:1px 5px;border-radius:4px}
 .hint{font-size:13px;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-/* Handy: Grid-Spalten dürfen schmaler als ihr Inhalt werden */
-.wrap>*,.main>*,.side>*{min-width:0}
+.tabbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:6px;padding:5px;background:var(--tabbar);border:1px solid var(--line);border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.tabbar button[role="tab"]{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;gap:8px;border:none;background:transparent;border-radius:8px;padding:8px 12px;color:var(--muted);font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden}
+.tabbar button[role="tab"]:hover{background:var(--tabhover)}
+.tabbar button[role="tab"][aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.tabbar svg{width:18px;height:18px;flex:none}
+.tabbar .sub{font-weight:400;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+@media (max-width:620px){.tabbar .sub{display:none}}
+.tabpanel{display:grid;gap:20px}
+.t2acc{text-decoration:underline;text-decoration-color:var(--angle);text-decoration-thickness:4px;text-underline-offset:6px}
+.defs{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:24px;align-items:center}
+@media (max-width:820px){.defs{grid-template-columns:1fr}}
+.defcards{display:grid;gap:10px}
+.defcard{display:flex;align-items:center;gap:14px;padding:10px 14px;border-radius:10px;background:var(--q);font-size:17px}
+.defcard .fn{font-weight:700;min-width:62px}
+.defcard.sin{background:var(--sin-soft)} .defcard.sin .fn{color:var(--sin)}
+.defcard.cos{background:var(--cos-soft)} .defcard.cos .fn{color:var(--cos)}
+.defcard.tan{background:var(--tan-soft)} .defcard.tan .fn{color:var(--tan)}
+.defcard .eq{display:flex;align-items:center}
+.gk{color:var(--sin);font-weight:700} .ak{color:var(--cos);font-weight:700} .hy{color:var(--ink);font-weight:700}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.2;text-align:center}
+.frac>span{padding:0 4px}
+.frac>span:last-child{border-top:1.5px solid currentColor;padding-top:1px}
+.frac.sm{font-size:.85em}
+.tri-head h2{margin:0}
+.tri-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px}
+.sizectl{display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:700;background:var(--q);border:1px solid var(--line);border-radius:999px;padding:3px 4px 3px 12px}
+.sizectl button{width:30px;height:30px;border-radius:50%;padding:0;font-size:18px;line-height:1;font-weight:700}
+.sizectl button:disabled{opacity:.35;cursor:default}
+.sizectl output{min-width:24px;text-align:center;font-family:var(--mono);font-size:17px}
+
+.muted{color:var(--muted);font-weight:400;font-size:.8em}
+.tri-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:820px){.tri-body{grid-template-columns:1fr}}
+.trisvg{max-width:440px;width:100%;justify-self:center;touch-action:auto}
+.stepnav{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.steplabel{font-size:13px;color:var(--muted);font-weight:700;letter-spacing:.04em}
+.dots{display:flex;gap:6px}
+.dots button{width:14px;height:14px;border-radius:50%;padding:0;border:1.5px solid var(--muted);background:transparent}
+.dots button[aria-current="step"]{background:var(--ink);border-color:var(--ink)}
+.steptitle{font-family:var(--display);font-size:21px;font-weight:700;margin:8px 0 10px}
+.stepbody p{margin:0 0 10px;max-width:60ch}
+.calc{display:grid;gap:8px;margin:12px 0}
+.calc .line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:17px;padding:8px 12px;border-radius:10px;background:var(--q)}
+.calc .line.sin{background:var(--sin-soft)} .calc .line.cos{background:var(--cos-soft)} .calc .line.tan{background:var(--tan-soft)}
+.calc .fn{font-weight:700;min-width:70px}
+.calc .line.sin .fn{color:var(--sin)} .calc .line.cos .fn{color:var(--cos)} .calc .line.tan .fn{color:var(--tan)}
+.calc .res{font-weight:700}
+.navbtns{margin-top:6px}
+.navbtns button:disabled{opacity:.4;cursor:default}
+.tablewrap{overflow-x:auto}
+.sumtab{min-width:360px}
+.sumtab td,.sumtab th{text-align:center;padding:10px}
+.sumtab td{font-size:18px}
+.sumtab td:first-child{font-weight:700;text-align:left}
+.sumtab .rs td:first-child{color:var(--sin)} .sumtab .rc td:first-child{color:var(--cos)} .sumtab .rt td:first-child{color:var(--tan)}
+.tlab{font-family:var(--body);font-size:15px;font-weight:700;paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
+.tcap{font-family:var(--body);font-size:11px;font-weight:700;paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
 </style>
 
 <div class="wrap">
+  <nav class="tabbar" role="tablist" aria-label="Ansicht wählen">
+    <button type="button" role="tab" id="tabbtn-dreieck" data-tab="dreieck" aria-controls="tab-dreieck" aria-selected="false" tabindex="-1"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 16.5 H17 V4 Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 16.5 V13.5 H17" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>Rechtwinkliges Dreieck <span class="sub">· 0° bis 90°</span></button>
+    <button type="button" role="tab" id="tabbtn-kreis" data-tab="kreis" aria-controls="tab-kreis" aria-selected="true"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 10 L15.3 4.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Einheitskreis <span class="sub">· alle Winkel</span></button>
+  </nav>
+  <section id="tab-kreis" class="tabpanel" role="tabpanel" aria-labelledby="tabbtn-kreis">
   <header>
     <div class="head-row">
     <h1><span class="s">Sinus</span> &amp; <span class="c">Cosinus</span> am Einheitskreis</h1>
+    <div class="headctl">
+    <div class="seg" role="group" aria-label="Darstellung">
+      <button type="button" data-lay="rechts" aria-pressed="true"><svg viewBox="0 0 22 14" aria-hidden="true"><circle cx="5" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11 9 q2.5 -6 5 0 t5 0" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Kurven rechts</button>
+      <button type="button" data-lay="unten" aria-pressed="false"><svg viewBox="0 0 22 14" aria-hidden="true"><circle cx="11" cy="4" r="3.3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 11.5 q2 -3 4 0 t4 0 t4 0 t4 0" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Kurven unten</button>
+    </div>
     <button id="tanBtn" type="button" class="tanbtn" role="switch" aria-checked="false"><span class="lbl">Tangens</span><span class="switch" aria-hidden="true"><span class="knob"></span></span></button>
+    </div>
     </div>
     <p>Zieh den Punkt&nbsp;P über den Kreis und beobachte, wie sich die <span style="color:var(--sin);font-weight:700">Sinus-</span> und <span style="color:var(--cos);font-weight:700">Cosinuswerte</span> verändern. Auf dem Einheitskreis gilt: P&nbsp;=&nbsp;(cos&nbsp;φ&nbsp;|&nbsp;sin&nbsp;φ).</p>
   </header>
 
-  <div class="main">
-    <div class="panel circle-panel">
+  <div id="layRechts">
+    <div class="panel couple">
+      <div class="slot" id="sH2r">
+    <h2 id="figH2">Einheitskreis und Graphen <span class="legend"><span id="lgS"><i style="background:var(--sin)"></i>y = sin φ</span><span id="lgC"><i style="background:var(--cos)"></i>y = cos φ</span><span id="lgT"><i style="background:var(--tan)"></i>y = tan φ</span></span></h2>
+      </div>
+      <div class="couple-scroll">
+        <div class="figrow" id="figrow">
+          <div class="slot" id="sCr">
       <svg id="circle" viewBox="-140 -140 280 280" aria-label="Einheitskreis mit verschiebbarem Punkt P">
         <g id="quads"></g>
         <g id="gridC"></g>
@@ -151,7 +239,7 @@ tr.cur td{background:var(--q);font-weight:700}
         <text id="sinTxt" class="mlabel" style="fill:var(--sin)">sin φ</text>
         <text id="cosTxt" class="mlabel" style="fill:var(--cos)" text-anchor="middle">cos φ</text>
         <g id="tanG" style="display:none">
-          <line x1="100" y1="-132" x2="100" y2="132" stroke="var(--tan)" stroke-width=".8" stroke-dasharray="3 2.5" opacity=".6"/>
+          <line x1="100" y1="-2000" x2="100" y2="2000" stroke="var(--tan)" stroke-width=".8" stroke-dasharray="3 2.5" opacity=".6"/>
           <line id="tanRay" stroke="var(--tan)" stroke-width="1" stroke-dasharray="3 2.5"/>
           <line id="tanSeg" x1="100" y1="0" x2="100" stroke="var(--tan)" stroke-width="3.2" stroke-linecap="round"/>
           <circle id="tanDot" r="2.8" fill="var(--tan)"/>
@@ -161,63 +249,17 @@ tr.cur td{background:var(--q);font-weight:700}
           <circle class="ring" r="7.5" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6"/>
           <circle r="3" fill="var(--ink)"/>
         </g>
-        <text id="aTxt" style="font-family:var(--display);font-weight:700;font-size:10px;fill:var(--ink)" text-anchor="middle" dominant-baseline="middle">P</text>
+        <text id="aTxt" style="font-family:var(--display);font-weight:700;font-size:13px;fill:var(--ink)" text-anchor="middle" dominant-baseline="middle">P</text>
       </svg>
-    </div>
-
-    <div class="side">
-      <div class="panel">
-        <div class="readout">
-          <div class="val ang"><div class="k">Winkel φ</div><div class="v" id="vA">0°</div><div class="x" id="vRad">0 rad</div></div>
-          <div class="val sin"><div class="k">sin φ</div><div class="v" id="vS">0.0000</div><div class="x" id="xS"></div></div>
-          <div class="val cos"><div class="k">cos φ</div><div class="v" id="vC">1.0000</div><div class="x" id="xC"></div></div>
-          <div class="val tan" id="tanTile" hidden><div class="k">tan φ</div><div class="v" id="vT">0.0000</div><div class="x" id="xT"></div></div>
-        </div>
-        <div class="status" style="margin-top:12px">
-          <span id="quadName" style="font-weight:700"></span>
-          <span class="pill" id="pS"></span>
-          <span class="pill" id="pC"></span>
-          <span class="pill" id="pT" hidden></span>
-          <span class="hint" id="pyth" style="font-family:var(--mono)"></span>
+          </div>
+          <div class="slot" id="sGr">
+            <svg id="graph" viewBox="0 0 624 280" aria-label="Graphen von Sinus und Cosinus"></svg>
+          </div>
+          <svg id="linkOverlay" aria-hidden="true"></svg>
         </div>
       </div>
-
-      <div class="panel controls">
-        <h2>Steuerung</h2>
-        <label for="slider" class="hint">Winkel direkt einstellen</label>
-        <input type="range" id="slider" min="0" max="359" step="1" value="0">
-        <div class="row angles" id="angleBtns" aria-label="Besondere Winkel"></div>
-        <div class="row" style="gap:16px">
-          <label class="toggle"><input type="checkbox" id="snap"> Einrasten (15°)</label>
-          <label class="toggle"><input type="checkbox" id="optSin"><span class="sw" style="background:var(--sin)"></span> Punkt mit gleichem Sinus</label>
-          <label class="toggle"><input type="checkbox" id="optCos"><span class="sw" style="background:var(--cos)"></span> Punkt mit gleichem Cosinus</label>
-        </div>
-        <div class="row">
-          <button id="play" type="button">▶ Umlauf abspielen</button>
-          <span class="hint">Tastatur: Punkt P anklicken, dann ← → (mit ⇧ in 15°-Schritten)</span>
-        </div>
-      </div>
-
-      <div class="panel">
-        <h2>Vorzeichen nach Quadrant</h2>
-        <table>
-          <thead><tr><th>Quadrant</th><th>Winkel</th><th>sin φ</th><th>cos φ</th><th class="tancol">tan φ</th></tr></thead>
-          <tbody id="signs">
-            <tr data-q="1"><td>I</td><td>0° – 90°</td><td class="p">+</td><td class="p">+</td><td class="tancol p">+</td></tr>
-            <tr data-q="2"><td>II</td><td>90° – 180°</td><td class="p">+</td><td class="n">−</td><td class="tancol n">−</td></tr>
-            <tr data-q="3"><td>III</td><td>180° – 270°</td><td class="n">−</td><td class="n">−</td><td class="tancol p">+</td></tr>
-            <tr data-q="4"><td>IV</td><td>270° – 360°</td><td class="n">−</td><td class="p">+</td><td class="tancol n">−</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <div class="panel graph-panel">
-    <h2>Abgewickelt: die Graphen <span class="legend"><span id="lgS"><i style="background:var(--sin)"></i>y = sin φ</span><span id="lgC"><i style="background:var(--cos)"></i>y = cos φ</span><span id="lgT"><i style="background:var(--tan)"></i>y = tan φ</span></span></h2>
-    <div class="graph-scroll">
-      <svg id="graph" viewBox="0 0 760 230" aria-label="Graphen von Sinus und Cosinus von 0 bis 360 Grad"></svg>
-    </div>
+      <div class="slot" id="sCtlR">
+        <div id="gctrl">
     <div class="gcontrols">
       <div class="seg" role="group" aria-label="Welche Kurven anzeigen">
         <button type="button" data-mode="all" aria-pressed="true">Alle</button>
@@ -241,10 +283,69 @@ tr.cur td{background:var(--q);font-weight:700}
       <button id="fullBtn" type="button" hidden>Ganze Kurven zeigen</button>
       <span class="hint" id="graphHint">Tipp: Auch im Graphen kannst du klicken oder ziehen, um φ zu setzen.</span>
     </div>
+        </div>
+      </div>
+    </div>
+    <div class="below slot" id="sBelow">
+      <div id="pReadout" class="panel">
+        <div class="readout">
+          <div class="val ang"><div class="k">Winkel φ</div><div class="v" id="vA">0°</div><div class="x" id="vRad">0 rad</div></div>
+          <div class="val sin"><div class="k">sin φ</div><div class="v" id="vS">0.0000</div><div class="x" id="xS"></div></div>
+          <div class="val cos"><div class="k">cos φ</div><div class="v" id="vC">1.0000</div><div class="x" id="xC"></div></div>
+          <div class="val tan" id="tanTile" hidden><div class="k">tan φ</div><div class="v" id="vT">0.0000</div><div class="x" id="xT"></div></div>
+        </div>
+        <div class="status" style="margin-top:12px">
+          <span id="quadName" style="font-weight:700"></span>
+          <span class="pill" id="pS"></span>
+          <span class="pill" id="pC"></span>
+          <span class="pill" id="pT" hidden></span>
+          <span class="hint" id="pyth" style="font-family:var(--mono)"></span>
+        </div>
+      </div>
+      <div id="pControls" class="panel controls">
+        <h2>Steuerung</h2>
+        <label for="slider" class="hint">Winkel direkt einstellen</label>
+        <input type="range" id="slider" min="0" max="359" step="1" value="0">
+        <div class="row angles" id="angleBtns" aria-label="Besondere Winkel"></div>
+        <div class="row" style="gap:16px">
+          <label class="toggle"><input type="checkbox" id="snap"> Einrasten (15°)</label>
+          <label class="toggle"><input type="checkbox" id="optSin"><span class="sw" style="background:var(--sin)"></span> Punkt mit gleichem Sinus</label>
+          <label class="toggle"><input type="checkbox" id="optCos"><span class="sw" style="background:var(--cos)"></span> Punkt mit gleichem Cosinus</label>
+        </div>
+        <div class="row">
+          <button id="play" type="button">▶ Umlauf abspielen</button>
+          <span class="hint">Tastatur: Punkt P anklicken, dann ← → (mit ⇧ in 15°-Schritten)</span>
+        </div>
+      </div>
+      <div id="pSigns" class="panel">
+        <h2>Vorzeichen nach Quadrant</h2>
+        <table>
+          <thead><tr><th>Quadrant</th><th>Winkel</th><th>sin φ</th><th>cos φ</th><th class="tancol">tan φ</th></tr></thead>
+          <tbody id="signs">
+            <tr data-q="1"><td>I</td><td>0° – 90°</td><td class="p">+</td><td class="p">+</td><td class="tancol p">+</td></tr>
+            <tr data-q="2"><td>II</td><td>90° – 180°</td><td class="p">+</td><td class="n">−</td><td class="tancol n">−</td></tr>
+            <tr data-q="3"><td>III</td><td>180° – 270°</td><td class="n">−</td><td class="n">−</td><td class="tancol p">+</td></tr>
+            <tr data-q="4"><td>IV</td><td>270° – 360°</td><td class="n">−</td><td class="p">+</td><td class="tancol n">−</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="layUnten" hidden>
+    <div class="main">
+      <div class="panel circle-panel slot" id="sCu"></div>
+      <div class="side slot" id="sSide"></div>
+    </div>
+    <div class="panel graph-panel">
+      <div class="slot" id="sH2u"></div>
+      <div class="graph-scroll slot" id="sGu"></div>
+      <div class="slot" id="sCtlU"></div>
+    </div>
   </div>
 
   <section>
-    <h2 style="font-size:22px;margin-bottom:12px">Verständnisfragen</h2>
+    <h2 style="font-size:22px;margin-bottom:12px">Elementare Verständnisfragen</h2>
     <div class="tasks">
       <div class="panel task">
         <div class="q">Frage 1</div>
@@ -276,6 +377,105 @@ tr.cur td{background:var(--q);font-weight:700}
         </details>
       </div>
     </div>
+  </section>
+  </section>
+
+  <section id="tab-dreieck" class="tabpanel" role="tabpanel" aria-labelledby="tabbtn-dreieck" hidden>
+    <header>
+      <h1>Spezielle Winkel im <span class="t2acc">rechtwinkligen Dreieck</span></h1>
+      <p>Für spitze Winkel (0° &lt; φ &lt; 90°) lassen sich Sinus, Cosinus und Tangens direkt als Seitenverhältnisse im rechtwinkligen Dreieck ablesen. Für 30°, 45° und 60° erhält man exakte Werte aus zwei besonderen Dreiecken.</p>
+    </header>
+
+    <div class="panel defs">
+      <svg id="defTri" viewBox="0 0 300 200" aria-label="Rechtwinkliges Dreieck mit Hypotenuse, Gegenkathete und Ankathete"></svg>
+      <div class="defcards">
+        <div class="defcard sin"><div class="fn">sin φ</div><div class="eq">=&nbsp;<span class="frac"><span class="gk">Gegenkathete</span><span class="hy">Hypotenuse</span></span></div></div>
+        <div class="defcard cos"><div class="fn">cos φ</div><div class="eq">=&nbsp;<span class="frac"><span class="ak">Ankathete</span><span class="hy">Hypotenuse</span></span></div></div>
+        <div class="defcard tan"><div class="fn">tan φ</div><div class="eq">=&nbsp;<span class="frac"><span class="gk">Gegenkathete</span><span class="ak">Ankathete</span></span></div></div>
+      </div>
+    </div>
+
+    <div class="panel tri" id="triEq">
+      <div class="tri-head"><h2>Das halbe gleichseitige Dreieck <span class="muted">(60°-60°-60° → 30°-60°-90°)</span></h2></div>
+      <div class="tri-body">
+        <svg class="trisvg" viewBox="0 0 360 330" aria-label="Gleichseitiges Dreieck, Schritt für Schritt"></svg>
+        <div class="tri-text">
+          <div class="stepnav">
+            <span class="steplabel"></span>
+            <span class="dots"></span>
+          </div>
+          <h3 class="steptitle"></h3>
+          <div class="stepbody"></div>
+          <div class="row navbtns">
+            <button type="button" class="prev">← Zurück</button>
+            <button type="button" class="next">Weiter →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel tri" id="triSq">
+      <div class="tri-head"><h2>Das halbe Quadrat <span class="muted">(45°-45°-90°)</span></h2></div>
+      <div class="tri-body">
+        <svg class="trisvg" viewBox="0 0 360 330" aria-label="Quadrat mit Diagonale, Schritt für Schritt"></svg>
+        <div class="tri-text">
+          <div class="stepnav">
+            <span class="steplabel"></span>
+            <span class="dots"></span>
+          </div>
+          <h3 class="steptitle"></h3>
+          <div class="stepbody"></div>
+          <div class="row navbtns">
+            <button type="button" class="prev">← Zurück</button>
+            <button type="button" class="next">Weiter →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Übersicht: exakte Werte</h2>
+      <div class="tablewrap">
+        <table class="sumtab">
+          <thead><tr><th></th><th>φ = 30°</th><th>φ = 45°</th><th>φ = 60°</th></tr></thead>
+          <tbody>
+            <tr class="rs"><td>sin φ</td><td><span class="frac"><span>1</span><span>2</span></span></td><td><span class="frac"><span>√2</span><span>2</span></span></td><td><span class="frac"><span>√3</span><span>2</span></span></td></tr>
+            <tr class="rc"><td>cos φ</td><td><span class="frac"><span>√3</span><span>2</span></span></td><td><span class="frac"><span>√2</span><span>2</span></span></td><td><span class="frac"><span>1</span><span>2</span></span></td></tr>
+            <tr class="rt"><td>tan φ</td><td><span class="frac"><span>√3</span><span>3</span></span></td><td>1</td><td>√3</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="hint" style="margin:10px 0 0">Merkhilfe: sin 30°, 45°, 60° = <span class="frac sm"><span>√1</span><span>2</span></span>, <span class="frac sm"><span>√2</span><span>2</span></span>, <span class="frac sm"><span>√3</span><span>2</span></span> – beim Cosinus ist es genau umgekehrt.</p>
+    </div>
+
+    <section>
+      <h2 style="font-size:22px;margin-bottom:12px">Elementare Verständnisfragen</h2>
+      <div class="tasks">
+        <div class="panel task">
+          <div class="q">Frage 1</div>
+          <p>Warum ist sin 30° genau gleich gross wie cos 60°?</p>
+          <details><summary>Lösung zeigen</summary>
+            <p>Beide Winkel liegen im selben Dreieck. Die Seite, die dem 30°-Winkel <b>gegenüber</b> liegt, liegt am 60°-Winkel <b>an</b>.</p>
+            <p>Allgemein gilt: <code>sin φ = cos(90° − φ)</code></p>
+          </details>
+        </div>
+        <div class="panel task">
+          <div class="q">Frage 2</div>
+          <p>Warum ist tan 45° = 1, ohne dass man etwas ausrechnen muss?</p>
+          <details><summary>Lösung zeigen</summary>
+            <p>Im 45°-45°-90°-Dreieck sind beide Katheten gleich lang. Der Tangens ist Gegenkathete durch Ankathete – also eine Zahl geteilt durch sich selbst.</p>
+          </details>
+        </div>
+        <div class="panel task">
+          <div class="q">Frage 3</div>
+          <p>Ein rechtwinkliges Dreieck hat die Hypotenuse 8 und einen Winkel von 30°. Wie lang sind die beiden Katheten?</p>
+          <details><summary>Lösung zeigen</summary>
+            <p>Gegenkathete: <code>8 · sin 30° = 8 · ½ = 4</code></p>
+            <p>Ankathete: <code>8 · cos 30° = 8 · √3/2 = 4√3 ≈ 6.93</code></p>
+          </details>
+        </div>
+      </div>
+    </section>
   </section>
 
 </div>
@@ -349,7 +549,7 @@ const fmt=v=>{const s=(Math.abs(v)<5e-5?0:v).toFixed(4);return s.startsWith("-")
 
 /* ---------- graph scaffold ---------- */
 const G=$("graph");
-const gx0=48,gx1=740,gy0=20; let gy1=200, gmid=(gy0+gy1)/2, gamp=(gy1-gy0)/2;
+const gx0=48,gy0=40; let gx1=580, gy1=240, gmid=140, gamp=100, HT=280, U=100, layout="rechts", tanLim=130;
 let ymax=1, tanOn=false;
 let xmin=0, xmax=360;
 const RANGES=[[0,360],[-360,360],[0,720]];
@@ -401,9 +601,23 @@ function markVisited(a){
 }
 function buildGraph(){
   const big=shT();
-  ymax=big?4:1;
-  gy1=big?560:200; gmid=(gy0+gy1)/2; gamp=(gy1-gy0)/2;
-  G.setAttribute("viewBox",`0 0 784 ${gy1+30}`);
+  const rechts=layout==="rechts";
+  /* U = Länge der Einheit 1 im Graphen. Bei "Kurven rechts" gleich lang wie im Kreis (R = 100),
+     damit die Verbindungslinien waagrecht sind. */
+  ymax=big?(rechts?3:4):1;
+  U=big?(rechts?65:67.5):(rechts?100:90);
+  HT=2*U*ymax+80; gy1=HT-40; gmid=HT/2; gamp=U*ymax;
+  gx1=rechts?580:740; const GW=gx1+44;
+  G.setAttribute("viewBox",`0 0 ${GW} ${HT}`);
+  clipRect.setAttribute("x",gx0-2);clipRect.setAttribute("width",gx1-gx0+4);
+  if(rechts){
+    const Vc=100*HT/U;   /* Kreis-viewBox so hoch, dass 1 Einheit gleich lang ist wie im Graphen */
+    $("circle").setAttribute("viewBox",`-140 ${-Vc/2} 280 ${Vc}`);
+    tanLim=Vc/2-6;
+    $("figrow").style.gridTemplateColumns=`${280/Vc}fr ${GW/HT}fr`;
+  }else{
+    $("circle").setAttribute("viewBox","-140 -140 280 280");tanLim=130;
+  }
   clipRect.setAttribute("height",gy1-gy0+16);
   gQuad.setAttribute("height",gy1-gy0); gLine.setAttribute("y2",gy1);
   gStatic.replaceChildren();gCurves.replaceChildren();
@@ -482,7 +696,7 @@ function render(){
   const undef=Math.abs(c)<1e-9, tn=undef?NaN:s/c;
   $("tanG").style.display=tanOn?"":"none";
   if(tanOn){
-    const lim=130, ty=undef?0:-tn*R;
+    const lim=tanLim, ty=undef?0:-tn*R;
     const clipped=undef||Math.abs(ty)>lim;
     const TY=undef?0:Math.max(-lim,Math.min(lim,ty));
     let rx=R, ry=ty;
@@ -558,7 +772,36 @@ function render(){
   gPartC.setAttribute("cx",GX(wrapPos(gp+k-alpha)));gPartC.setAttribute("cy",GY(Math.cos(kt)));
   if(q){const qs=gp-(alpha-(q-1)*90);gQuad.style.display="";gQuad.setAttribute("x",GX(qs));gQuad.setAttribute("width",GX(qs+90)-GX(qs));}else gQuad.style.display="none";
   }
+  /* Verbindungslinien Kreis → Graph (nur bei "Kurven rechts"; gleiche Skala → waagrecht) */
+  drawLinks(x,y,s,tn,undef,gp);
+
 }
+
+/* ---------- gekoppelte Darstellung ---------- */
+let lastLink=null;
+function drawLinks(x,y,s,tn,undef,gp){
+  lastLink=[x,y,s,tn,undef,gp];
+  const ov=$("linkOverlay");ov.replaceChildren();
+  if(layout!=="rechts")return;
+  const Cs=$("circle"),fr=$("figrow").getBoundingClientRect();
+  const mC=Cs.getScreenCTM(),mG=G.getScreenCTM();if(!mC||!mG||!fr.width)return;
+  const map=(m,px,py)=>{const pt=Cs.createSVGPoint();pt.x=px;pt.y=py;const q=pt.matrixTransform(m);return[q.x-fr.left,q.y-fr.top];};
+  const ln=(A,B,col)=>el("line",{x1:A[0],y1:A[1],x2:B[0],y2:B[1],stroke:col,"stroke-width":1.6,"stroke-dasharray":"6 5",opacity:.9},ov);
+  if(shS()) ln(map(mC,x,y),map(mG,GX(gp),GY(s)),"var(--sin)");
+  if(shT()&&!undef&&Math.abs(tn)<=ymax*1.03&&Math.abs(tn*R)<=tanLim) ln(map(mC,R,-tn*R),map(mG,GX(gp),GY(tn)),"var(--tan)");
+}
+window.addEventListener("resize",()=>{if(lastLink)drawLinks(...lastLink);});
+function setLayout(m){
+  layout=m;
+  const put=(id,slot)=>$(slot).appendChild($(id));
+  if(m==="rechts"){put("figH2","sH2r");put("circle","sCr");put("graph","sGr");put("gctrl","sCtlR");["pReadout","pControls","pSigns"].forEach(i=>put(i,"sBelow"));}
+  else{put("figH2","sH2u");put("circle","sCu");put("graph","sGu");put("gctrl","sCtlU");["pReadout","pControls","pSigns"].forEach(i=>put(i,"sSide"));}
+  $("layRechts").hidden=m!=="rechts";$("layUnten").hidden=m!=="unten";
+  $("figH2").firstChild.textContent=m==="rechts"?"Einheitskreis und Graphen ":"Abgewickelt: die Graphen ";
+  document.querySelectorAll("[data-lay]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lay===m));
+  lastA=null;buildGraph();render();
+}
+document.querySelectorAll("[data-lay]").forEach(b=>b.addEventListener("click",()=>setLayout(b.dataset.lay)));
 
 /* ---------- interaction ---------- */
 const C=$("circle");
@@ -648,6 +891,229 @@ document.querySelectorAll("[data-demo]").forEach(b=>b.addEventListener("click",(
 }));
 
 set(30);
+})();
+</script>
+<script>
+(function(){
+/* ---------- Tabs ---------- */
+const tabs=[...document.querySelectorAll('.tabbar [role="tab"]')];
+function showTab(name,focus){
+  tabs.forEach(t=>{
+    const on=t.dataset.tab===name;
+    t.setAttribute("aria-selected",on);t.tabIndex=on?0:-1;
+    document.getElementById(t.getAttribute("aria-controls")).hidden=!on;
+    if(on&&focus)t.focus();
+  });
+  try{history.replaceState(null,"","#"+name);}catch(e){}
+}
+tabs.forEach((t,i)=>{
+  t.addEventListener("click",()=>showTab(t.dataset.tab));
+  t.addEventListener("keydown",e=>{
+    if(e.key==="ArrowRight"||e.key==="ArrowLeft"){
+      const n=tabs[(i+(e.key==="ArrowRight"?1:tabs.length-1))%tabs.length];
+      showTab(n.dataset.tab,true);e.preventDefault();
+    }
+  });
+});
+{let h="";try{h=location.hash.slice(1);}catch(e){}
+ showTab(tabs.some(t=>t.dataset.tab===h)?h:tabs[0].dataset.tab);}
+
+/* ---------- SVG-Helfer ---------- */
+const NS="http://www.w3.org/2000/svg";
+const el=(tag,a,p)=>{const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);p&&p.appendChild(e);return e;};
+const sub=(a,b)=>[a[0]-b[0],a[1]-b[1]], add=(a,b)=>[a[0]+b[0],a[1]+b[1]], mul=(a,k)=>[a[0]*k,a[1]*k];
+const unit=v=>{const l=Math.hypot(v[0],v[1]);return[v[0]/l,v[1]/l];};
+const mid=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2];
+const cen=pts=>[pts.reduce((s,p)=>s+p[0],0)/pts.length,pts.reduce((s,p)=>s+p[1],0)/pts.length];
+function poly(pts,a,g){return el("polygon",Object.assign({points:pts.map(p=>p.join(",")).join(" ")},a),g);}
+function seg(p,q,a,g){return el("line",Object.assign({x1:p[0],y1:p[1],x2:q[0],y2:q[1],"stroke-linecap":"round"},a),g);}
+function txt(p,s,a,g,cls){const t=el("text",Object.assign({x:p[0],y:p[1],"text-anchor":"middle","dominant-baseline":"central",class:cls||"tlab"},a),g);t.textContent=s;return t;}
+function wedge(V,P1,P2,r,color,label,g,lr){
+  const a1=Math.atan2(P1[1]-V[1],P1[0]-V[0]);let d=Math.atan2(P2[1]-V[1],P2[0]-V[0])-a1;
+  while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;
+  const x1=add(V,[r*Math.cos(a1),r*Math.sin(a1)]),x2=add(V,[r*Math.cos(a1+d),r*Math.sin(a1+d)]);
+  el("path",{d:`M${V[0]} ${V[1]} L${x1[0]} ${x1[1]} A${r} ${r} 0 0 ${d>0?1:0} ${x2[0]} ${x2[1]} Z`,fill:color,"fill-opacity":.2,stroke:color,"stroke-width":1.6},g);
+  if(label){const m=a1+d/2,R=r+(lr||15);txt(add(V,[R*Math.cos(m),R*Math.sin(m)]),label,{fill:"var(--ink)",style:"font-size:13px"},g);}
+}
+function rightMark(V,P1,P2,s,g){
+  const u1=mul(unit(sub(P1,V)),s),u2=mul(unit(sub(P2,V)),s);
+  el("path",{d:`M${add(V,u1).join(" ")} L${add(add(V,u1),u2).join(" ")} L${add(V,u2).join(" ")}`,fill:"none",stroke:"var(--ink)","stroke-width":1.4},g);
+}
+function sideLab(p,q,s,C,off,color,g,cap){
+  const m=mid(p,q);let n=unit([-(q[1]-p[1]),q[0]-p[0]]);
+  if((m[0]-C[0])*n[0]+(m[1]-C[1])*n[1]<0)n=mul(n,-1);
+  const pos=add(m,mul(n,off+(cap?6:0)));
+  txt(cap?add(pos,[0,-7]):pos,s,{fill:color},g);
+  if(cap)txt(add(pos,[0,10]),cap,{fill:color},g,"tcap");
+}
+const fr=(n,d)=>`<span class="frac"><span>${n}</span><span>${d}</span></span>`;
+const GK='<span class="gk">GK</span>',AK='<span class="ak">AK</span>',HY='<span class="hy">H</span>';
+const legend='<p class="hint">GK = Gegenkathete, AK = Ankathete, H = Hypotenuse (jeweils vom Winkel φ aus gesehen)</p>';
+function line(cls,fn,parts){return `<div class="line ${cls}"><span class="fn">${fn}</span>${parts.map(p=>"= "+p).join(" ")}</div>`;}
+
+/* ---------- Definitions-Dreieck ---------- */
+{
+  const g=document.getElementById("defTri");g.setAttribute("viewBox","0 0 360 215");
+  const A=[30,172],R=[250,172],B=[250,36],C=cen([A,R,B]);
+  poly([A,R,B],{fill:"var(--q)",stroke:"none"},g);
+  wedge(A,R,B,42,"var(--angle)","φ",g,14);
+  seg(A,R,{stroke:"var(--cos)","stroke-width":5},g);
+  seg(R,B,{stroke:"var(--sin)","stroke-width":5},g);
+  seg(A,B,{stroke:"var(--ink)","stroke-width":3},g);
+  rightMark(R,A,B,16,g);
+  txt([140,196],"Ankathete",{fill:"var(--cos)"},g);
+  txt([258,104],"Gegenkathete",{fill:"var(--sin)","text-anchor":"start"},g);
+  const m=mid(A,B),ang=Math.atan2(B[1]-A[1],B[0]-A[0])*180/Math.PI;
+  const t=txt(add(m,[-9,-14]),"Hypotenuse",{fill:"var(--ink)"},g);t.setAttribute("transform",`rotate(${ang} ${m[0]-9} ${m[1]-14})`);
+}
+
+/* ---------- Schritt-Steuerung (mit wählbarer Seitenlänge a) ---------- */
+function stepper(root,steps,draw){
+  let cur=0, opt=null, a=1;
+  const svg=root.querySelector(".trisvg"),dots=root.querySelector(".dots");
+  const ctl=document.createElement("div");ctl.className="sizectl";
+  ctl.innerHTML=`<span>Seitenlänge <i>a</i> =</span><button type="button" class="minus" aria-label="Seitenlänge verkleinern">−</button><output aria-live="polite">1</output><button type="button" class="plus" aria-label="Seitenlänge vergrössern">+</button>`;
+  root.querySelector(".tri-head").appendChild(ctl);
+  ctl.querySelector(".minus").onclick=()=>{a=Math.max(1,a-1);go(cur);};
+  ctl.querySelector(".plus").onclick=()=>{a=Math.min(10,a+1);go(cur);};
+  steps.forEach((s,i)=>{const b=document.createElement("button");b.type="button";b.setAttribute("aria-label",`Schritt ${i+1}: ${s.title}`);b.onclick=()=>go(i);dots.appendChild(b);});
+  root.querySelector(".prev").onclick=()=>go(cur-1);
+  root.querySelector(".next").onclick=()=>go(cur+1);
+  function go(i){
+    cur=Math.max(0,Math.min(steps.length-1,i));
+    const st=steps[cur];
+    if(st.opts&&!st.opts.includes(opt))opt=st.opts[0];
+    ctl.querySelector("output").textContent=a;
+    ctl.querySelector(".minus").disabled=a<=1;ctl.querySelector(".plus").disabled=a>=10;
+    root.querySelector(".steplabel").textContent=`SCHRITT ${cur+1} VON ${steps.length}`;
+    root.querySelector(".steptitle").textContent=st.title;
+    const body=root.querySelector(".stepbody");body.innerHTML=st.body(opt,a);
+    body.querySelectorAll("[data-opt]").forEach(b=>{
+      b.setAttribute("aria-pressed",+b.dataset.opt===opt);
+      b.onclick=()=>{opt=+b.dataset.opt;go(cur);};
+    });
+    [...dots.children].forEach((d,k)=>{if(k===cur)d.setAttribute("aria-current","step");else d.removeAttribute("aria-current");});
+    root.querySelector(".prev").disabled=cur===0;
+    root.querySelector(".next").disabled=cur===steps.length-1;
+    svg.replaceChildren();draw(svg,cur,opt,a);
+  }
+  go(0);
+}
+/* Zahlen-Formatierung */
+const halfS=a=>a%2===0?String(a/2):(a===1?"½":a+"/2");
+const hS=a=>a===1?"√3/2":a===2?"√3":a%2===0?(a/2)+"√3":a+"√3/2";
+const dS=a=>a===1?"√2":a+"√2";
+const q4=n=>n%4===0?String(n/4):(n===1?"¼":n===3?"¾":n+"/4");
+const dec=x=>x.toFixed(3).replace(/0+$/,"").replace(/\.$/,"");
+const invariant='<p class="hint">Probier oben eine andere Seitenlänge: Das Dreieck wird grösser, die Verhältnisse – und damit sin, cos und tan – bleiben gleich.</p>';
+
+/* ---------- Gleichseitiges Dreieck ---------- */
+{
+  const A=[50,285],B=[310,285],C=[180,285-260*Math.sqrt(3)/2],D=[180,285];
+  const G=cen([A,B,C]),Gr=cen([D,B,C]);
+  const steps=[
+    {title:"Gleichseitiges Dreieck",body:(o,a)=>`<p>Wir starten mit einem gleichseitigen Dreieck mit der Seitenlänge <b>${a}</b>.</p><p>Alle drei Winkel sind gleich gross: 180° : 3 = <b>60°</b>.</p>`},
+    {title:"Höhe einzeichnen",body:(o,a)=>`<p>Die Höhe halbiert die Grundseite (je <b>${halfS(a)}</b>) und den Winkel an der Spitze (je <b>30°</b>).</p><p>So entstehen zwei gleiche rechtwinklige Dreiecke mit den Winkeln <b>30°, 60° und 90°</b>.</p>`},
+    {title:"Höhe berechnen",body:(o,a)=>`<p>Im rechten Teildreieck kennen wir die Hypotenuse (${a}) und eine Kathete (${halfS(a)}). Die Höhe h folgt aus Pythagoras:</p>
+      <div class="calc"><div class="line">h² + (${halfS(a)})² = ${a}²</div><div class="line">h² = ${a*a} − ${q4(a*a)} = ${q4(3*a*a)}</div><div class="line"><span class="res">h = √(${q4(3*a*a)}) = ${hS(a)} ≈ ${dec(a*Math.sqrt(3)/2)}</span></div></div>`},
+    {title:"Werte ablesen",opts:[30,60],body:(o,a)=>{
+      const segHtml=`<div class="seg" role="group" aria-label="Winkel wählen"><button type="button" data-opt="30">φ = 30°</button><button type="button" data-opt="60">φ = 60°</button></div>`;
+      const H=String(a), Hf=halfS(a), Hh=hS(a);
+      const c=o===30
+        ?[line("sin","sin 30°",[fr(GK,HY),fr(Hf,H),`<span class="res">${fr(1,2)}</span>`]),
+          line("cos","cos 30°",[fr(AK,HY),fr(Hh,H),`<span class="res">${fr("√3",2)}</span>`]),
+          line("tan","tan 30°",[fr(GK,AK),fr(Hf,Hh),fr(1,"√3"),`<span class="res">${fr("√3",3)}</span>`])]
+        :[line("sin","sin 60°",[fr(GK,HY),fr(Hh,H),`<span class="res">${fr("√3",2)}</span>`]),
+          line("cos","cos 60°",[fr(AK,HY),fr(Hf,H),`<span class="res">${fr(1,2)}</span>`]),
+          line("tan","tan 60°",[fr(GK,AK),fr(Hh,Hf),`<span class="res">√3</span>`])];
+      return segHtml+`<div class="calc">${c.join("")}</div>`+legend+(a===1?`<p class="hint">Weil die Hypotenuse 1 ist, sind sin φ und cos φ direkt die Kathetenlängen – wie im Einheitskreis.</p>`:"")+invariant;
+    }}
+  ];
+  stepper(document.getElementById("triEq"),steps,(g,s,o,a)=>{
+    const L=String(a),Hf=halfS(a),Hh=hS(a);
+    if(s<2){
+      poly([A,B,C],{fill:"var(--q)",stroke:"var(--ink)","stroke-width":2.4,"stroke-linejoin":"round"},g);
+      if(s===0){
+        [[A,B],[B,C],[C,A]].forEach(([p,q])=>sideLab(p,q,L,G,16,"var(--ink)",g));
+        wedge(A,B,C,30,"var(--angle)","60°",g,16);wedge(B,C,A,30,"var(--angle)","60°",g,16);wedge(C,A,B,30,"var(--angle)","60°",g,16);
+      }else{
+        seg(C,D,{stroke:"var(--angle)","stroke-width":2.4,"stroke-dasharray":"7 5"},g);
+        sideLab(A,D,Hf,G,16,"var(--ink)",g);sideLab(D,B,Hf,G,16,"var(--ink)",g);
+        sideLab(A,C,L,G,16,"var(--ink)",g);sideLab(B,C,L,G,16,"var(--ink)",g);
+        rightMark(D,B,C,14,g);
+        wedge(A,B,C,30,"var(--angle)","60°",g,16);wedge(B,C,A,30,"var(--angle)","60°",g,16);
+        wedge(C,A,D,38,"var(--angle)","30°",g,14);wedge(C,D,B,38,"var(--angle)","30°",g,14);
+      }
+      return;
+    }
+    poly([A,D,C],{fill:"none",stroke:"var(--muted)","stroke-width":1.4,"stroke-dasharray":"4 4",opacity:.6},g);
+    poly([D,B,C],{fill:"var(--q)",stroke:"none"},g);
+    if(s===2){
+      poly([D,B,C],{fill:"none",stroke:"var(--ink)","stroke-width":2.4,"stroke-linejoin":"round"},g);
+      sideLab(D,B,Hf,Gr,16,"var(--ink)",g);sideLab(B,C,L,Gr,16,"var(--ink)",g);sideLab(D,C,"h",Gr,16,"var(--angle)",g);
+      rightMark(D,B,C,14,g);return;
+    }
+    const opp=o===30?[D,B]:[D,C], adj=o===30?[D,C]:[D,B];
+    seg(opp[0],opp[1],{stroke:"var(--sin)","stroke-width":6},g);
+    seg(adj[0],adj[1],{stroke:"var(--cos)","stroke-width":6},g);
+    seg(B,C,{stroke:"var(--ink)","stroke-width":3},g);
+    rightMark(D,B,C,14,g);
+    if(o===30)wedge(C,D,B,40,"var(--angle)","φ",g,14);else wedge(B,C,D,34,"var(--angle)","φ",g,14);
+    sideLab(opp[0],opp[1],o===30?Hf:Hh,Gr,16,"var(--sin)",g,"GK");
+    sideLab(adj[0],adj[1],o===30?Hh:Hf,Gr,16,"var(--cos)",g,"AK");
+    sideLab(B,C,L,Gr,16,"var(--ink)",g,"H");
+  });
+}
+
+/* ---------- Halbes Quadrat ---------- */
+{
+  const P=[80,285],Q=[280,285],R=[280,85],T=[80,85];
+  const G=cen([P,Q,R,T]),Gr=cen([P,Q,R]);
+  const steps=[
+    {title:"Quadrat",body:(o,a)=>`<p>Wir starten mit einem Quadrat mit der Seitenlänge <b>${a}</b>. Alle vier Winkel sind 90°.</p>`},
+    {title:"Diagonale einzeichnen",body:()=>`<p>Die Diagonale teilt das Quadrat in zwei gleiche rechtwinklige Dreiecke und halbiert die rechten Winkel: 90° : 2 = <b>45°</b>.</p><p>Beide Katheten sind gleich lang – das Dreieck ist <b>gleichschenklig</b>.</p>`},
+    {title:"Diagonale berechnen",body:(o,a)=>`<p>Die Diagonale d ist die Hypotenuse. Mit Pythagoras:</p>
+      <div class="calc"><div class="line">d² = ${a}² + ${a}² = ${2*a*a}</div><div class="line"><span class="res">d = √${2*a*a}${a>1?" = "+dS(a):""} ≈ ${dec(a*Math.SQRT2)}</span></div></div>`},
+    {title:"Werte ablesen",body:(o,a)=>`<div class="calc">
+      ${line("sin","sin 45°",[fr(GK,HY),fr(a,dS(a))].concat(a>1?[fr(1,"√2")]:[]).concat([`<span class="res">${fr("√2",2)}</span>`]))}
+      ${line("cos","cos 45°",[fr(AK,HY),fr(a,dS(a))].concat(a>1?[fr(1,"√2")]:[]).concat([`<span class="res">${fr("√2",2)}</span>`]))}
+      ${line("tan","tan 45°",[fr(GK,AK),fr(a,a),`<span class="res">1</span>`])}</div>`+legend+
+      `<p class="hint">${fr(1,"√2")} mit √2 erweitern ergibt ${fr("√2",2)} ≈ 0.7071.</p>`+invariant}
+  ];
+  stepper(document.getElementById("triSq"),steps,(g,s,o,a)=>{
+    const L=String(a);
+    if(s===0){
+      poly([P,Q,R,T],{fill:"var(--q)",stroke:"var(--ink)","stroke-width":2.4,"stroke-linejoin":"round"},g);
+      [[P,Q],[Q,R],[R,T],[T,P]].forEach(([p,q])=>sideLab(p,q,L,G,16,"var(--ink)",g));
+      [[P,Q,T],[Q,R,P],[R,T,Q],[T,P,R]].forEach(([v,x,y])=>rightMark(v,x,y,14,g));
+      return;
+    }
+    if(s===1){
+      poly([P,Q,R,T],{fill:"var(--q)",stroke:"var(--ink)","stroke-width":2.4,"stroke-linejoin":"round"},g);
+      seg(P,R,{stroke:"var(--angle)","stroke-width":2.4,"stroke-dasharray":"7 5"},g);
+      [[P,Q],[Q,R],[R,T],[T,P]].forEach(([p,q])=>sideLab(p,q,L,G,16,"var(--ink)",g));
+      rightMark(Q,P,R,14,g);rightMark(T,R,P,14,g);
+      wedge(P,Q,R,40,"var(--angle)","45°",g,16);wedge(P,R,T,40,"var(--angle)","45°",g,16);
+      wedge(R,P,Q,40,"var(--angle)","45°",g,16);wedge(R,T,P,40,"var(--angle)","45°",g,16);
+      return;
+    }
+    poly([P,R,T],{fill:"none",stroke:"var(--muted)","stroke-width":1.4,"stroke-dasharray":"4 4",opacity:.6},g);
+    poly([P,Q,R],{fill:"var(--q)",stroke:"none"},g);
+    if(s===2){
+      poly([P,Q,R],{fill:"none",stroke:"var(--ink)","stroke-width":2.4,"stroke-linejoin":"round"},g);
+      sideLab(P,Q,L,Gr,16,"var(--ink)",g);sideLab(Q,R,L,Gr,16,"var(--ink)",g);sideLab(P,R,"d",Gr,16,"var(--angle)",g);
+      rightMark(Q,P,R,14,g);return;
+    }
+    seg(Q,R,{stroke:"var(--sin)","stroke-width":6},g);
+    seg(P,Q,{stroke:"var(--cos)","stroke-width":6},g);
+    seg(P,R,{stroke:"var(--ink)","stroke-width":3},g);
+    rightMark(Q,P,R,14,g);
+    wedge(P,Q,R,44,"var(--angle)","φ",g,14);
+    sideLab(Q,R,L,Gr,16,"var(--sin)",g,"GK");
+    sideLab(P,Q,L,Gr,16,"var(--cos)",g,"AK");
+    sideLab(P,R,dS(a),Gr,16,"var(--ink)",g,"H");
+  });
+}
 })();
 </script>
 </html>
