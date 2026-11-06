@@ -918,7 +918,7 @@ tabs.forEach((t,i)=>{
   });
 });
 {let h="";try{h=location.hash.slice(1);}catch(e){}
- showTab(tabs.some(t=>t.dataset.tab===h)?h:tabs[0].dataset.tab);}
+ showTab(tabs.some(t=>t.dataset.tab===h)?h:"dreieck");}
 
 /* ---------- SVG-Helfer ---------- */
 const NS="http://www.w3.org/2000/svg";
